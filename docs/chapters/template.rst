@@ -25,7 +25,7 @@ Bastille 0.8.x
 --------------
 Bastille 0.8.x introduces template arguments that may be defined in the 
 `Bastillefile` using the ARG keyword and supplied via the command line or via an
-arguments file see below for more details.
+arguments file (see below).
 
 Template Automation Hooks
 -------------------------
@@ -85,9 +85,8 @@ name. List these top-level directories one per line.
 
 Template Arguments
 ------------------
-You may pass variables to your `Bastillefile` via the command line or an arguments
-file. Only variables in the `Bastillefile` and defined via ARG will have their 
-values replaced. 
+You may pass variables to your `Bastillefile` via the command line or via an 
+arguments file containing one line by line definitions. 
 
 Define your arguments in the `Bastillefile` using ARG:
 
@@ -121,9 +120,10 @@ Then provide the path to the file using --arg-file
 
   bastille template webjail nginx --arg-file values.txt
 
-Template arguments will only be replaced in the `Bastillefile`, to replace any
-arguments in COPY or OVERLAY files you may use the RENDER command to specify a 
-file or directory whose contents should have the args replaced by their values.
+Only variables in the `Bastillefile` and defined via ARG will have their values 
+replaced. To replace any defined variables in other files use the RENDER command
+to specify a file or directory whose contents should have the args replaced with
+their values.
 
 .. code-block:: shell
 
@@ -133,7 +133,8 @@ file or directory whose contents should have the args replaced by their values.
   # Bastillefile
   ARG my_email
   OVERLAY etc
-  RENDER /etc/aliases
+  RENDER etc/aliases
+
 
 
 Applying Templates

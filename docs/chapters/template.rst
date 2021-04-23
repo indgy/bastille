@@ -21,6 +21,12 @@ instructions were spread across multiple files. The new syntax is done in a
 `Bastillefile` and the template hook (see below) files are replaced with
 template hook commands.
 
+Bastille 0.8.x
+--------------
+Bastille 0.8.x introduces template arguments that may be defined in the 
+`Bastillefile` using the ARG keyword and supplied via the command line or via an
+arguments file see below for more details.
+
 Template Automation Hooks
 -------------------------
 
@@ -76,6 +82,59 @@ use, be sure to include `usr` in the template OVERLAY definition. eg;
 The above example "usr" will include anything under "usr" inside the template.
 You do not need to list individual files. Just include the top-level directory
 name. List these top-level directories one per line.
+
+Template Arguments
+------------------
+You may pass variables to your `Bastillefile` via the command line or an arguments
+file. Only variables in the `Bastillefile` and defined via ARG will have their 
+values replaced. 
+
+Define your arguments in the `Bastillefile` using ARG:
+
+.. code-block:: shell
+
+  # With a default:
+  ARG user=root
+  # Without a default:
+  ARG domain
+  # They can then by used in subsequent values:
+  CMD echo "${username}@${domain}"
+
+To pass argument values via the command line use --arg
+
+.. code-block:: shell
+
+  bastille template webjail nginx --arg username=admin --arg domain=example.com
+
+To pass argument values via a file, first create a file with one definition per 
+line:
+
+.. code-block:: shell
+
+  # values.txt
+  username=admin
+  domain=example.com
+
+Then provide the path to the file using --arg-file 
+
+.. code-block:: shell
+
+  bastille template webjail nginx --arg-file values.txt
+
+Template arguments will only be replaced in the `Bastillefile`, to replace any
+arguments in COPY or OVERLAY files you may use the RENDER command to specify a 
+file or directory whose contents should have the args replaced by their values.
+
+.. code-block:: shell
+
+  # etc/aliases overlay
+  root: ${my_email}
+
+  # Bastillefile
+  ARG my_email
+  OVERLAY etc
+  RENDER /etc/aliases
+
 
 Applying Templates
 ------------------
